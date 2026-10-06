@@ -1,13 +1,20 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
 <meta name="theme-color" content="#ffffff">
 
 <title>MJ 도수 초견 트레이너</title>
 
 <style>
+
 *{
   box-sizing:border-box;
 }
@@ -77,8 +84,12 @@ button{
   font:inherit;
   font-weight:700;
   cursor:pointer;
+
   -webkit-tap-highlight-color:transparent;
   touch-action:manipulation;
+
+  -webkit-user-select:none;
+  user-select:none;
 }
 
 .primary{
@@ -88,6 +99,20 @@ button{
 
 .secondary{
   background:#eee;
+  color:#111;
+}
+
+.sound{
+  background:#111;
+  color:#fff;
+  width:100%;
+  height:54px;
+  font-size:16px;
+  margin-bottom:16px;
+}
+
+.sound.ready{
+  background:#e8e8e8;
   color:#111;
 }
 
@@ -120,10 +145,12 @@ button{
   background:#fafafa;
   border:1px solid #d8d8d8;
   border-radius:12px;
+
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
+
   position:relative;
   overflow:hidden;
 }
@@ -217,6 +244,16 @@ button{
   margin-top:14px;
 }
 
+.mobile-help{
+  display:none;
+  background:#f1f1f1;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:16px;
+  font-size:13px;
+  line-height:1.6;
+}
+
 @media(max-width:650px){
 
   .wrap{
@@ -250,276 +287,440 @@ button{
   .big{
     min-width:0;
   }
+
 }
+
 </style>
 </head>
+
 
 <body>
 
 <div class="wrap">
 
-  <h1>MJ 도수 초견 트레이너</h1>
+<h1>MJ 도수 초견 트레이너</h1>
 
-  <div class="sub">
-    랜덤 4마디 · 5~60초 암기 · 도수 숨김 · 메트로놈 연주
-  </div>
+<div class="sub">
+랜덤 4마디 · 5~60초 암기 · 도수 숨김 · 메트로놈 연주
+</div>
 
-  <div class="panel">
 
-    <div class="controls">
+<div class="panel">
 
-      <div>
-        <label>난이도</label>
 
-        <select id="level">
-          <option value="basic">중급</option>
-          <option value="advanced" selected>중상급</option>
-          <option value="hard">상급</option>
-        </select>
-      </div>
+<!-- =========================================
+     모바일 오디오 활성화
+========================================= -->
 
-      <div>
-        <label>템포 (BPM)</label>
+<div
+  class="mobile-help"
+  id="mobileHelp"
+>
+  카카오톡에서 링크를 열었는데 소리가 나지 않는다면
+  오른쪽 상단 메뉴에서 <b>Safari로 열기</b>를 선택해주세요.
+</div>
 
-        <input
-          id="tempo"
-          type="number"
-          min="40"
-          max="220"
-          value="100"
-        >
-      </div>
 
-      <div>
-        <label>암기 시간</label>
+<button
+  class="sound"
+  id="soundButton"
+>
+  🔊 소리 활성화
+</button>
 
-        <select id="seconds">
 
-          <option value="5">5초</option>
-          <option value="10" selected>10초</option>
-          <option value="15">15초</option>
-          <option value="20">20초</option>
-          <option value="25">25초</option>
-          <option value="30">30초</option>
-          <option value="35">35초</option>
-          <option value="40">40초</option>
-          <option value="45">45초</option>
-          <option value="50">50초</option>
-          <option value="55">55초</option>
-          <option value="60">60초</option>
+<!-- =========================================
+     설정
+========================================= -->
 
-        </select>
-      </div>
+<div class="controls">
 
-      <div>
+<div>
 
-        <label>키</label>
+<label>난이도</label>
 
-        <select id="keyMode">
+<select id="level">
 
-          <option value="random" selected>
-            랜덤 12키
-          </option>
+<option value="basic">
+중급
+</option>
 
-          <option value="fixed">
-            직접 선택
-          </option>
+<option
+  value="advanced"
+  selected
+>
+중상급
+</option>
 
-        </select>
+<option value="hard">
+상급
+</option>
 
-        <select
-          id="fixedKey"
-          style="display:none;margin-top:6px"
-        >
+</select>
 
-          <option>Bb</option>
-          <option>C</option>
-          <option>Db</option>
-          <option>D</option>
-          <option>Eb</option>
-          <option>E</option>
-          <option>F</option>
-          <option>Gb</option>
-          <option>G</option>
-          <option>Ab</option>
-          <option>A</option>
-          <option>B</option>
+</div>
 
-        </select>
 
-      </div>
+<div>
 
-    </div>
+<label>템포 (BPM)</label>
 
-    <div class="keyline">
-      KEY <span class="key" id="key">Bb</span>
-    </div>
+<input
+  id="tempo"
+  type="number"
+  min="40"
+  max="220"
+  value="100"
+>
 
-    <div class="status" id="status">
-      새로운 진행을 생성하세요.
-    </div>
+</div>
 
-    <div class="count" id="count"></div>
 
-    <div class="grid" id="grid"></div>
+<div>
 
-    <div class="actions">
+<label>암기 시간</label>
 
-      <button
-        class="primary big"
-        id="start"
-      >
-        새 문제 + 카운트
-      </button>
+<select id="seconds">
 
-      <button
-        class="secondary big"
-        id="show"
-      >
-        도수 다시 보기
-      </button>
+<option value="5">
+5초
+</option>
 
-      <button
-        class="secondary"
-        id="tempoMinus"
-      >
-        BPM −5
-      </button>
+<option
+  value="10"
+  selected
+>
+10초
+</option>
 
-      <button
-        class="secondary"
-        id="tempoPlus"
-      >
-        BPM +5
-      </button>
+<option value="15">
+15초
+</option>
 
-    </div>
+<option value="20">
+20초
+</option>
 
-    <div class="metronome">
+<option value="25">
+25초
+</option>
 
-      <div style="font-weight:700">
-        METRONOME
-      </div>
+<option value="30">
+30초
+</option>
 
-      <div
-        class="beat"
-        id="beats"
-      >
-        <span>1</span>
-        <span>2</span>
-        <span>3</span>
-        <span>4</span>
-      </div>
+<option value="35">
+35초
+</option>
 
-      <button
-        class="primary"
-        id="metro"
-      >
-        메트로놈 시작
-      </button>
+<option value="40">
+40초
+</option>
 
-    </div>
+<option value="45">
+45초
+</option>
 
-    <div class="note">
+<option value="50">
+50초
+</option>
 
-      • 문제를 생성하면 설정한 암기 시간 동안 4마디 도수를 확인합니다.<br>
-      • 카운트가 끝나면 도수가 자동으로 사라집니다.<br>
-      • 이후 메트로놈이 자동으로 시작되어 연주할 수 있습니다.<br>
-      • 메트로놈은 별도의 음원 파일 없이 브라우저에서 직접 생성됩니다.
+<option value="55">
+55초
+</option>
 
-    </div>
+<option value="60">
+60초
+</option>
 
-  </div>
+</select>
+
+</div>
+
+
+<div>
+
+<label>키</label>
+
+<select id="keyMode">
+
+<option
+  value="random"
+  selected
+>
+랜덤 12키
+</option>
+
+<option value="fixed">
+직접 선택
+</option>
+
+</select>
+
+
+<select
+  id="fixedKey"
+  style="display:none;margin-top:6px"
+>
+
+<option>Bb</option>
+<option>C</option>
+<option>Db</option>
+<option>D</option>
+<option>Eb</option>
+<option>E</option>
+<option>F</option>
+<option>Gb</option>
+<option>G</option>
+<option>Ab</option>
+<option>A</option>
+<option>B</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<!-- =========================================
+     KEY
+========================================= -->
+
+<div class="keyline">
+
+KEY
+<span
+  class="key"
+  id="key"
+>
+Bb
+</span>
+
+</div>
+
+
+<div
+  class="status"
+  id="status"
+>
+먼저 소리를 활성화해주세요.
+</div>
+
+
+<div
+  class="count"
+  id="count"
+></div>
+
+
+<!-- =========================================
+     문제
+========================================= -->
+
+<div
+  class="grid"
+  id="grid"
+></div>
+
+
+<!-- =========================================
+     버튼
+========================================= -->
+
+<div class="actions">
+
+<button
+  class="primary big"
+  id="start"
+>
+새 문제 + 카운트
+</button>
+
+
+<button
+  class="secondary big"
+  id="show"
+>
+도수 다시 보기
+</button>
+
+
+<button
+  class="secondary"
+  id="tempoMinus"
+>
+BPM −5
+</button>
+
+
+<button
+  class="secondary"
+  id="tempoPlus"
+>
+BPM +5
+</button>
+
+</div>
+
+
+<!-- =========================================
+     메트로놈
+========================================= -->
+
+<div class="metronome">
+
+<div style="font-weight:700">
+METRONOME
+</div>
+
+
+<div
+  class="beat"
+  id="beats"
+>
+
+<span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+
+</div>
+
+
+<button
+  class="primary"
+  id="metro"
+>
+메트로놈 시작
+</button>
+
+</div>
+
+
+<div class="note">
+
+• 문제를 생성하면 설정한 암기 시간 동안 4마디 도수를 확인합니다.<br>
+
+• 카운트가 끝나면 도수가 자동으로 사라집니다.<br>
+
+• 메트로놈은 별도의 MP3 파일 없이 브라우저에서 직접 생성됩니다.<br>
+
+• 모바일에서 처음 사용할 때는 위의 「소리 활성화」 버튼을 한 번 눌러주세요.
+
+</div>
+
+
+</div>
 
 </div>
 
 
 <script>
 
+
 /* =========================================================
-   기본 데이터
+   데이터
 ========================================================= */
 
 const keys = [
-  "C","Db","D","Eb","E","F",
-  "Gb","G","Ab","A","Bb","B"
+
+"C",
+"Db",
+"D",
+"Eb",
+"E",
+"F",
+"Gb",
+"G",
+"Ab",
+"A",
+"Bb",
+"B"
+
 ];
 
 
 const pools = {
 
-  basic:[
-    "I",
-    "IIM7",
-    "IIm7",
-    "III7",
-    "IIIm7",
-    "IVM7",
-    "V7",
-    "VIm7",
-    "VIIø7",
-    "bVIIM7"
-  ],
+basic:[
 
-  advanced:[
-    "I",
-    "IM7",
-    "IIm7",
-    "II7",
-    "IIIM7",
-    "III7",
-    "IVM7",
-    "IVm7",
-    "V7",
-    "VIm7",
-    "VI7",
-    "VIIø7",
-    "bII7",
-    "bVIIM7",
-    "bVI7",
-    "bVII7",
-    "bIII7"
-  ],
+"I",
+"IIM7",
+"IIm7",
+"III7",
+"IIIm7",
+"IVM7",
+"V7",
+"VIm7",
+"VIIø7",
+"bVIIM7"
 
-  hard:[
-    "I",
-    "IM7",
-    "IIm7",
-    "II7",
-    "IIø7",
-    "IIIM7",
-    "III7",
-    "IVM7",
-    "IVm7",
-    "IV7",
-    "V7",
-    "V7(b9)",
-    "V7(#9)",
-    "VIm7",
-    "VI7",
-    "VIIø7",
-    "bII7",
-    "bIIIM7",
-    "bVI7",
-    "bVIIM7",
-    "bVII7",
-    "bVIIIM7"
-  ]
+],
+
+advanced:[
+
+"I",
+"IM7",
+"IIm7",
+"II7",
+"IIIM7",
+"III7",
+"IVM7",
+"IVm7",
+"V7",
+"VIm7",
+"VI7",
+"VIIø7",
+"bII7",
+"bVIIM7",
+"bVI7",
+"bVII7",
+"bIII7"
+
+],
+
+hard:[
+
+"I",
+"IM7",
+"IIm7",
+"II7",
+"IIø7",
+"IIIM7",
+"III7",
+"IVM7",
+"IVm7",
+"IV7",
+"V7",
+"V7(b9)",
+"V7(#9)",
+"VIm7",
+"VI7",
+"VIIø7",
+"bII7",
+"bIIIM7",
+"bVI7",
+"bVIIM7",
+"bVII7",
+"bVIIIM7"
+
+]
 
 };
 
 
 /* =========================================================
-   상태값
+   변수
 ========================================================= */
 
 let current = [];
 
 let timer = null;
 
-let metroRunning = false;
-
 let metroTimer = null;
+
+let metroRunning = false;
 
 let beat = 0;
 
@@ -527,26 +728,28 @@ let nextBeatTime = 0;
 
 let audioContext = null;
 
+let audioReady = false;
+
 
 /* =========================================================
    DOM
 ========================================================= */
 
 const $ = id =>
-  document.getElementById(id);
+document.getElementById(id);
 
 
 /* =========================================================
    랜덤
 ========================================================= */
 
-function rand(array){
+function rand(arr){
 
-  return array[
-    Math.floor(
-      Math.random() * array.length
-    )
-  ];
+return arr[
+Math.floor(
+Math.random() * arr.length
+)
+];
 
 }
 
@@ -557,72 +760,234 @@ function rand(array){
 
 function getBPM(){
 
-  let bpm =
-    parseInt(
-      $("tempo").value,
-      10
-    );
+let bpm =
+parseInt(
+$("tempo").value,
+10
+);
 
-  if(isNaN(bpm)){
-    bpm = 100;
-  }
+if(isNaN(bpm)){
+bpm = 100;
+}
 
-  bpm =
-    Math.max(
-      40,
-      Math.min(
-        220,
-        bpm
-      )
-    );
+bpm =
+Math.max(
+40,
+Math.min(
+220,
+bpm
+)
+);
 
-  $("tempo").value = bpm;
+$("tempo").value = bpm;
 
-  return bpm;
+return bpm;
 
 }
 
 
 /* =========================================================
-   Web Audio 생성
+   오디오 시스템 생성
 ========================================================= */
 
-/*
-   외부 mp3 파일을 사용하지 않습니다.
+function createAudio(){
 
-   따라서 GitHub Pages에서
-   mp3 경로 문제,
-   iPhone에서 파일 재생 문제,
-   상대경로 문제 등을 피할 수 있습니다.
+if(audioContext){
+return audioContext;
+}
+
+const AudioCtx =
+window.AudioContext ||
+window.webkitAudioContext;
+
+if(!AudioCtx){
+
+alert(
+"이 브라우저에서는 오디오 기능을 사용할 수 없습니다."
+);
+
+return null;
+
+}
+
+try{
+
+audioContext =
+new AudioCtx();
+
+}catch(e){
+
+console.error(e);
+
+return null;
+
+}
+
+return audioContext;
+
+}
+
+
+/* =========================================================
+   실제 테스트 음
+========================================================= */
+
+function testSound(){
+
+const ctx =
+createAudio();
+
+if(!ctx){
+return false;
+}
+
+
+/*
+   중요:
+   iPhone Safari에서는
+   resume()이 사용자 터치 이벤트 안에서
+   실행되어야 함
 */
 
-function initAudio(){
+if(
+ctx.state === "suspended" ||
+ctx.state === "interrupted"
+){
 
-  if(!audioContext){
+ctx.resume();
 
-    const AudioContext =
-      window.AudioContext ||
-      window.webkitAudioContext;
+}
 
-    if(!AudioContext){
-      alert(
-        "이 브라우저에서는 Web Audio를 사용할 수 없습니다."
-      );
-      return false;
-    }
 
-    audioContext =
-      new AudioContext();
+/*
+   아주 단순한 beep 생성
+*/
 
-  }
+const oscillator =
+ctx.createOscillator();
 
-  if(audioContext.state === "suspended"){
+const gain =
+ctx.createGain();
 
-    audioContext.resume();
 
-  }
+oscillator.type =
+"sine";
 
-  return true;
+oscillator.frequency.value =
+880;
+
+
+const now =
+ctx.currentTime;
+
+
+gain.gain.setValueAtTime(
+0.0001,
+now
+);
+
+gain.gain.linearRampToValueAtTime(
+0.35,
+now + 0.01
+);
+
+gain.gain.exponentialRampToValueAtTime(
+0.0001,
+now + 0.18
+);
+
+
+oscillator.connect(gain);
+
+gain.connect(
+ctx.destination
+);
+
+
+oscillator.start(now);
+
+oscillator.stop(
+now + 0.2
+);
+
+
+return true;
+
+}
+
+
+/* =========================================================
+   소리 활성화
+========================================================= */
+
+function activateSound(){
+
+const ctx =
+createAudio();
+
+if(!ctx){
+
+$("status").textContent =
+"이 브라우저에서는 오디오를 사용할 수 없습니다.";
+
+return;
+
+}
+
+
+/*
+   반드시 버튼 클릭 안에서 resume
+*/
+
+try{
+
+const result =
+ctx.resume();
+
+if(result){
+result.catch(()=>{});
+}
+
+}catch(e){
+
+console.error(e);
+
+}
+
+
+/*
+   즉시 테스트음
+*/
+
+testSound();
+
+
+/*
+   상태 변경
+*/
+
+audioReady = true;
+
+$("soundButton")
+.classList
+.add("ready");
+
+$("soundButton")
+.textContent =
+"✓ 소리 활성화 완료";
+
+
+$("status").textContent =
+"소리가 활성화되었습니다. 이제 연습을 시작하세요.";
+
+
+/*
+   모바일 도움말 표시
+*/
+
+$("mobileHelp")
+.style.display =
+"block";
 
 }
 
@@ -631,63 +996,80 @@ function initAudio(){
    메트로놈 클릭음
 ========================================================= */
 
-function playClick(accent=false){
+function playClick(accent){
 
-  if(!audioContext){
-    return;
-  }
+if(!audioContext){
+return;
+}
 
-  const now =
-    audioContext.currentTime;
 
-  const oscillator =
-    audioContext.createOscillator();
+/*
+   혹시 Safari가 다시 suspended 상태가 된 경우
+*/
 
-  const gain =
-    audioContext.createGain();
+if(
+audioContext.state === "suspended" ||
+audioContext.state === "interrupted"
+){
 
-  oscillator.type = "sine";
+audioContext.resume();
 
-  /*
-    첫 박자는 조금 높은 음,
-    나머지는 낮은 음
-  */
+}
 
-  oscillator.frequency.value =
-    accent
-      ? 1500
-      : 1000;
 
-  /*
-    아주 짧은 클릭음
-  */
+const now =
+audioContext.currentTime;
 
-  gain.gain.setValueAtTime(
-    0.0001,
-    now
-  );
 
-  gain.gain.exponentialRampToValueAtTime(
-    accent ? 0.35 : 0.25,
-    now + 0.002
-  );
+const oscillator =
+audioContext.createOscillator();
 
-  gain.gain.exponentialRampToValueAtTime(
-    0.0001,
-    now + 0.055
-  );
+const gain =
+audioContext.createGain();
 
-  oscillator.connect(gain);
 
-  gain.connect(
-    audioContext.destination
-  );
+oscillator.type =
+"sine";
 
-  oscillator.start(now);
 
-  oscillator.stop(
-    now + 0.06
-  );
+oscillator.frequency.value =
+accent
+? 1500
+: 1000;
+
+
+/*
+   짧은 클릭
+*/
+
+gain.gain.setValueAtTime(
+0.0001,
+now
+);
+
+gain.gain.linearRampToValueAtTime(
+accent ? 0.32 : 0.23,
+now + 0.002
+);
+
+gain.gain.exponentialRampToValueAtTime(
+0.0001,
+now + 0.055
+);
+
+
+oscillator.connect(gain);
+
+gain.connect(
+audioContext.destination
+);
+
+
+oscillator.start(now);
+
+oscillator.stop(
+now + 0.06
+);
 
 }
 
@@ -698,186 +1080,218 @@ function playClick(accent=false){
 
 function generate(){
 
-  const mode =
-    $("keyMode").value;
+const mode =
+$("keyMode").value;
 
-  const key =
-    mode === "random"
-      ? rand(keys)
-      : $("fixedKey").value;
 
-  $("key").textContent =
-    key;
+const selectedKey =
+mode === "random"
+? rand(keys)
+: $("fixedKey").value;
 
-  const pool =
-    pools[
-      $("level").value
-    ];
 
-  current =
-    Array.from(
-      {length:4},
-      () => rand(pool)
-    );
+$("key").textContent =
+selectedKey;
 
-  render();
 
-  $("status").textContent =
-    "새로운 문제가 생성되었습니다. 설정한 시간 동안 진행을 기억하세요.";
+const pool =
+pools[
+$("level").value
+];
+
+
+current =
+Array.from(
+{length:4},
+()=>rand(pool)
+);
+
+
+render();
+
+
+$("status").textContent =
+"새로운 문제가 생성되었습니다.";
 
 }
 
 
 /* =========================================================
-   문제 화면
+   문제 출력
 ========================================================= */
 
 function render(){
 
-  $("grid").innerHTML = "";
+$("grid").innerHTML = "";
 
-  current.forEach(
-    (chord,index)=>{
 
-      const box =
-        document.createElement("div");
+current.forEach(
+(chord,index)=>{
 
-      box.className =
-        "bar";
+const box =
+document.createElement("div");
 
-      box.innerHTML =
 
-        '<div class="num">' +
-        (index + 1) +
-        '마디</div>' +
+box.className =
+"bar";
 
-        '<div class="chord">' +
-        chord +
-        '</div>';
 
-      $("grid")
-        .appendChild(box);
+box.innerHTML =
 
-    }
-  );
+'<div class="num">' +
+(index+1) +
+'마디</div>' +
 
-  $("grid")
-    .classList
-    .remove("hidden");
+'<div class="chord">' +
+chord +
+'</div>';
 
-  $("count").textContent = "";
+
+$("grid")
+.appendChild(box);
+
+});
+
+
+$("grid")
+.classList
+.remove("hidden");
+
+
+$("count").textContent = "";
 
 }
 
 
 /* =========================================================
-   도수 숨기기
+   숨기기
 ========================================================= */
 
 function hide(){
 
-  $("grid")
-    .classList
-    .add("hidden");
+$("grid")
+.classList
+.add("hidden");
 
 }
 
 
 /* =========================================================
-   카운트다운
+   새 문제 + 카운트
 ========================================================= */
 
 function start(){
 
-  /*
-    이전 카운트 제거
-  */
+/*
+   아직 소리가 활성화되지 않았다면
+   먼저 활성화하도록 안내
+*/
 
-  clearInterval(timer);
+if(!audioReady){
 
-  /*
-    메트로놈이 이미 실행 중이면 정지
-  */
+$("status").textContent =
+"먼저 위의 「소리 활성화」 버튼을 눌러주세요.";
 
-  if(metroRunning){
+return;
 
-    stopMetro();
+}
 
-  }
 
-  /*
-    사용자 터치 직후 AudioContext 활성화
-  */
+/*
+   이전 타이머 제거
+*/
 
-  initAudio();
+clearInterval(timer);
 
-  /*
-    새로운 문제 생성
-  */
 
-  generate();
+/*
+   메트로놈 정지
+*/
 
-  /*
-    사용자가 선택한 암기 시간
-  */
+if(metroRunning){
 
-  let remaining =
-    parseInt(
-      $("seconds").value,
-      10
-    );
+stopMetro();
 
-  /*
-    처음부터 선택한 시간이 표시됨
-  */
+}
 
-  $("count").textContent =
-    remaining;
 
-  $("status").textContent =
-    "진행을 암기하세요.";
+/*
+   새 문제
+*/
 
-  /*
-    1초마다 감소
-  */
+generate();
 
-  timer =
-    setInterval(()=>{
 
-      remaining--;
+/*
+   사용자가 설정한 시간
+*/
 
-      if(remaining > 0){
+let remaining =
+parseInt(
+$("seconds").value,
+10
+);
 
-        $("count").textContent =
-          remaining;
 
-        return;
+/*
+   즉시 표시
+*/
 
-      }
+$("count").textContent =
+remaining;
 
-      /*
-        종료
-      */
 
-      clearInterval(timer);
+$("status").textContent =
+"진행을 암기하세요.";
 
-      timer = null;
 
-      $("count").textContent = "";
+/*
+   카운트
+*/
 
-      hide();
+timer =
+setInterval(()=>{
 
-      /*
-        암기 종료 직후
-        메트로놈 시작
-      */
+remaining--;
 
-      startMetro();
 
-      $("status").textContent =
-        "도수가 숨겨졌습니다. 메트로놈에 맞춰 연주하세요.";
+if(remaining > 0){
 
-    },1000);
+$("count").textContent =
+remaining;
+
+return;
+
+}
+
+
+/*
+   종료
+*/
+
+clearInterval(timer);
+
+timer = null;
+
+$("count").textContent =
+"";
+
+
+hide();
+
+
+$("status").textContent =
+"도수가 숨겨졌습니다. 메트로놈을 시작합니다.";
+
+
+/*
+   자동 메트로놈
+*/
+
+startMetro();
+
+
+},1000);
 
 }
 
@@ -888,209 +1302,138 @@ function start(){
 
 function show(){
 
-  clearInterval(timer);
+clearInterval(timer);
 
-  timer = null;
+timer = null;
 
-  $("count").textContent = "";
+$("count").textContent = "";
 
-  render();
+render();
 
-  $("status").textContent =
-    "도수를 다시 확인할 수 있습니다.";
+$("status").textContent =
+"도수를 다시 확인할 수 있습니다.";
 
 }
 
 
 /* =========================================================
-   키 선택
-========================================================= */
-
-$("keyMode").onchange = ()=>{
-
-  $("fixedKey").style.display =
-    $("keyMode").value === "fixed"
-      ? "block"
-      : "none";
-
-};
-
-
-/* =========================================================
-   새 문제
-========================================================= */
-
-$("start").onclick = ()=>{
-
-  start();
-
-};
-
-
-/* =========================================================
-   다시 보기
-========================================================= */
-
-$("show").onclick = ()=>{
-
-  show();
-
-};
-
-
-/* =========================================================
-   BPM -
-========================================================= */
-
-$("tempoMinus").onclick = ()=>{
-
-  const bpm =
-    getBPM();
-
-  $("tempo").value =
-    Math.max(
-      40,
-      bpm - 5
-    );
-
-  if(metroRunning){
-
-    restartMetro();
-
-  }
-
-};
-
-
-/* =========================================================
-   BPM +
-========================================================= */
-
-$("tempoPlus").onclick = ()=>{
-
-  const bpm =
-    getBPM();
-
-  $("tempo").value =
-    Math.min(
-      220,
-      bpm + 5
-    );
-
-  if(metroRunning){
-
-    restartMetro();
-
-  }
-
-};
-
-
-/* =========================================================
-   박자 표시
+   박자 화면
 ========================================================= */
 
 function visualBeat(){
 
-  const spans =
-    $("beats")
-      .querySelectorAll("span");
+const spans =
+$("beats")
+.querySelectorAll("span");
 
-  spans.forEach(
-    (span,index)=>{
 
-      span.classList.toggle(
-        "active",
-        index === beat
-      );
+spans.forEach(
+(span,index)=>{
 
-    }
-  );
+span.classList.toggle(
+"active",
+index === beat
+);
+
+});
 
 }
 
 
 /* =========================================================
-   정확한 박자 예약
+   메트로놈 예약
 ========================================================= */
 
-function scheduleNextBeat(){
+function scheduleBeat(){
 
-  if(!metroRunning){
-    return;
-  }
+if(!metroRunning){
+return;
+}
 
-  const bpm =
-    getBPM();
 
-  const interval =
-    60000 / bpm;
+const bpm =
+getBPM();
 
-  const now =
-    performance.now();
 
-  /*
-    브라우저가 잠시 지연되더라도
-    다음 박자 기준점을 다시 잡음
-  */
+const interval =
+60000 / bpm;
 
-  if(
-    nextBeatTime <
-    now - interval
-  ){
 
-    nextBeatTime =
-      now;
+const now =
+performance.now();
 
-  }
 
-  const delay =
-    Math.max(
-      0,
-      nextBeatTime - now
-    );
+/*
+   브라우저가 많이 지연되었으면
+   기준점을 다시 잡음
+*/
 
-  metroTimer =
-    setTimeout(()=>{
+if(
+nextBeatTime <
+now - interval
+){
 
-      if(!metroRunning){
-        return;
-      }
+nextBeatTime =
+now;
 
-      /*
-        현재 박자
-      */
+}
 
-      const currentBeat =
-        beat;
 
-      /*
-        소리 재생
-      */
+const delay =
+Math.max(
+0,
+nextBeatTime - now
+);
 
-      playClick(
-        currentBeat === 0
-      );
 
-      /*
-        화면 표시
-      */
+metroTimer =
+setTimeout(()=>{
 
-      visualBeat();
+if(!metroRunning){
+return;
+}
 
-      /*
-        다음 박자
-      */
 
-      beat =
-        (beat + 1) % 4;
+/*
+   현재 박자
+*/
 
-      nextBeatTime +=
-        interval;
+const currentBeat =
+beat;
 
-      scheduleNextBeat();
 
-    },delay);
+/*
+   소리
+*/
+
+playClick(
+currentBeat === 0
+);
+
+
+/*
+   화면
+*/
+
+visualBeat();
+
+
+/*
+   다음 박자
+*/
+
+beat =
+(beat + 1) % 4;
+
+
+nextBeatTime +=
+interval;
+
+
+scheduleBeat();
+
+
+},delay);
 
 }
 
@@ -1101,63 +1444,75 @@ function scheduleNextBeat(){
 
 function startMetro(){
 
-  if(!initAudio()){
-    return;
-  }
+if(!audioReady){
 
-  clearTimeout(metroTimer);
-
-  metroTimer = null;
-
-  metroRunning = true;
-
-  beat = 0;
-
-  $("metro").textContent =
-    "메트로놈 정지";
-
-  /*
-    첫 박자를 즉시 재생
-  */
-
-  nextBeatTime =
-    performance.now();
-
-  playClick(true);
-
-  visualBeat();
-
-  beat = 1;
-
-  /*
-    두 번째 박자 예약
-  */
-
-  const bpm =
-    getBPM();
-
-  nextBeatTime +=
-    60000 / bpm;
-
-  scheduleNextBeat();
+return;
 
 }
 
 
-/* =========================================================
-   메트로놈 재시작
-========================================================= */
+if(!audioContext){
 
-function restartMetro(){
+return;
 
-  stopMetro();
+}
 
-  /*
-    약간의 지연 없이
-    바로 다시 시작
-  */
 
-  startMetro();
+/*
+   Safari 상태 확인
+*/
+
+if(
+audioContext.state === "suspended" ||
+audioContext.state === "interrupted"
+){
+
+audioContext.resume();
+
+}
+
+
+clearTimeout(metroTimer);
+
+
+metroRunning = true;
+
+beat = 0;
+
+
+$("metro").textContent =
+"메트로놈 정지";
+
+
+/*
+   첫 박자 즉시
+*/
+
+nextBeatTime =
+performance.now();
+
+
+playClick(true);
+
+visualBeat();
+
+
+beat = 1;
+
+
+/*
+   다음 박자
+*/
+
+const bpm =
+getBPM();
+
+
+nextBeatTime +=
+60000 / bpm;
+
+
+scheduleBeat();
 
 }
 
@@ -1168,55 +1523,197 @@ function restartMetro(){
 
 function stopMetro(){
 
-  clearTimeout(metroTimer);
+clearTimeout(metroTimer);
 
-  metroTimer = null;
+metroTimer = null;
 
-  metroRunning = false;
+metroRunning = false;
 
-  beat = 0;
+beat = 0;
 
-  const spans =
-    $("beats")
-      .querySelectorAll("span");
 
-  spans.forEach(
-    span=>{
-      span.classList.remove("active");
-    }
-  );
+$("metro").textContent =
+"메트로놈 시작";
 
-  $("metro").textContent =
-    "메트로놈 시작";
+
+$("beats")
+.querySelectorAll("span")
+.forEach(
+span=>{
+span.classList.remove("active");
+}
+);
 
 }
+
+
+/* =========================================================
+   메트로놈 재시작
+========================================================= */
+
+function restartMetro(){
+
+stopMetro();
+
+startMetro();
+
+}
+
+
+/* =========================================================
+   오디오 활성화 버튼
+========================================================= */
+
+$("soundButton").onclick =
+function(){
+
+activateSound();
+
+};
+
+
+/* =========================================================
+   새 문제
+========================================================= */
+
+$("start").onclick =
+function(){
+
+start();
+
+};
+
+
+/* =========================================================
+   다시 보기
+========================================================= */
+
+$("show").onclick =
+function(){
+
+show();
+
+};
 
 
 /* =========================================================
    메트로놈 버튼
 ========================================================= */
 
-$("metro").onclick = ()=>{
+$("metro").onclick =
+function(){
 
-  /*
-    이 함수는 반드시
-    사용자의 실제 터치 이벤트에서 실행됨.
+/*
+   이 버튼도 직접 터치한 경우
+   AudioContext resume 가능
+*/
 
-    따라서 iPhone Safari에서도
-    AudioContext를 정상적으로 활성화할 수 있음.
-  */
+if(!audioReady){
 
-  if(metroRunning){
+activateSound();
 
-    stopMetro();
+return;
 
-  }else{
+}
 
-    initAudio();
 
-    startMetro();
+if(metroRunning){
 
-  }
+stopMetro();
+
+}else{
+
+/*
+   사용자 터치 안에서 resume
+*/
+
+if(audioContext){
+
+try{
+
+const result =
+audioContext.resume();
+
+if(result){
+result.catch(()=>{});
+}
+
+}catch(e){}
+
+}
+
+startMetro();
+
+}
+
+};
+
+
+/* =========================================================
+   BPM -
+========================================================= */
+
+$("tempoMinus").onclick =
+function(){
+
+const bpm =
+getBPM();
+
+
+$("tempo").value =
+Math.max(
+40,
+bpm - 5
+);
+
+
+if(metroRunning){
+
+restartMetro();
+
+}
+
+};
+
+
+/* =========================================================
+   BPM +
+========================================================= */
+
+$("tempoPlus").onclick =
+function(){
+
+const bpm =
+getBPM();
+
+
+$("tempo").value =
+Math.min(
+220,
+bpm + 5
+);
+
+
+if(metroRunning){
+
+restartMetro();
+
+}
+
+};
+
+
+/* =========================================================
+   키 선택
+========================================================= */
+
+$("keyMode").onchange =
+function(){
+
+$("fixedKey").style.display =
+$("keyMode").value === "fixed"
+? "block"
+: "none";
 
 };
 
@@ -1227,7 +1724,9 @@ $("metro").onclick = ()=>{
 
 generate();
 
+
 </script>
 
 </body>
 </html>
+```
