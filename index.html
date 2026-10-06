@@ -51,4 +51,54 @@
     font-weight: 700;
     cursor: pointer;
   }
+
+  .sound-guide-button:active {
+    transform: scale(0.98);
+  }
 </style>
+
+<!-- 소리 안내 팝업 -->
+<div class="sound-guide-overlay" id="soundGuide">
+  <div class="sound-guide-box">
+
+    <div class="sound-guide-title">
+      🔊 소리 안내
+    </div>
+
+    <div class="sound-guide-text">
+
+      아이폰에서 소리가 나지 않을 경우<br><br>
+
+      <span class="sound-guide-highlight">
+        ① 무음 모드를 해제해주세요.
+      </span><br>
+
+      ② 휴대폰 볼륨을 확인해주세요.<br>
+
+      ③ 카카오톡에서 실행되지 않는 경우,<br>
+      <span class="sound-guide-highlight">
+        주소를 복사하여 Safari에서 직접 접속해주세요.
+      </span><br>
+
+      ④ 아래의 <b>소리 활성화</b> 버튼을 눌러주세요.
+
+    </div>
+
+    <button
+      class="sound-guide-button"
+      onclick="closeSoundGuide()">
+      확인했습니다
+    </button>
+
+  </div>
+</div>
+
+<script>
+  function closeSoundGuide() {
+    const guide = document.getElementById("soundGuide");
+
+    if (guide) {
+      guide.style.display = "none";
+    }
+  }
+</script>
