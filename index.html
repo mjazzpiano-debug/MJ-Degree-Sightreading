@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#ffffff">
+<title>MJ 도수 초견 트레이너</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f7f7f7;color:#111;font-family:Arial,"Noto Sans KR",sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:28px 18px 40px}
+h1{font-size:28px;margin:0 0 6px;font-weight:800}
+.sub{color:#666;margin-bottom:24px}
+.panel{background:#fff;border:1px solid #ddd;border-radius:18px;padding:20px;box-shadow:0 5px 20px rgba(0,0,0,.04)}
+.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+label{font-size:13px;color:#666;display:block;margin-bottom:6px}
+select,input,button{font:inherit}
+select,input[type=number]{width:100%;height:44px;border:1px solid #ccc;border-radius:10px;padding:0 12px;background:#fff}
+button{border:0;border-radius:11px;height:46px;padding:0 18px;font-weight:700;cursor:pointer}
+.primary{background:#111;color:#fff}
+.secondary{background:#eee;color:#111}
+.keyline{text-align:center;margin:10px 0 16px}
+.key{font-size:22px;font-weight:800}
+.status{text-align:center;color:#666;min-height:24px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+.bar{height:150px;background:#fafafa;border:1px solid #d8d8d8;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.bar:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#111}
+.num{position:absolute;top:10px;left:14px;font-size:12px;color:#999}
+.chord{font-size:27px;font-weight:800;letter-spacing:-.5px}
+.hidden .chord{visibility:hidden}
+.hidden .bar{background:#eee}
+.hidden .bar:before{background:#bbb}
+.hidden .num{visibility:hidden}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.big{min-width:180px}
+.metronome{margin-top:18px;padding-top:18px;border-top:1px solid #eee;text-align:center}
+.beat{font-size:30px;font-weight:800;letter-spacing:8px;margin:8px 0 12px;min-height:38px}
+.beat span.active{opacity:1}
+.beat span{opacity:.18}
+.note{font-size:13px;color:#777;line-height:1.6;margin-top:14px}
+.count{font-size:48px;font-weight:900;text-align:center;height:58px}
+@media(max-width:650px){
+ .wrap{padding:20px 12px 30px}
+ h1{font-size:23px}
+ .controls{grid-template-columns:1fr 1fr}
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .bar{height:125px}
+ .chord{font-size:22px}
+ .actions button{width:100%}
+ .big{min-width:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>MJ 도수 초견 트레이너</h1>
+  <div class="sub">랜덤 4마디 · 5~60초 암기 · 도수 숨김 · 메트로놈 연주</div>
+
+  <div class="panel">
+    <div class="controls">
+      <div>
+        <label>난이도</label>
+        <select id="level">
+          <option value="basic">중급</option>
+          <option value="advanced" selected>중상급</option>
+          <option value="hard">상급</option>
+        </select>
+      </div>
+      <div>
+        <label>템포 (BPM)</label>
+        <input id="tempo" type="number" min="40" max="220" value="100">
+      </div>
+      <div>
+        <label>암기 시간</label>
+        <select id="seconds"><option value="5">5초</option><option value="10" selected>10초</option><option value="15">15초</option><option value="20">20초</option><option value="25">25초</option><option value="30">30초</option><option value="35">35초</option><option value="40">40초</option><option value="45">45초</option><option value="50">50초</option><option value="55">55초</option><option value="60">60초</option></select>
+      </div>
+      <div>
+        <label>키</label>
+        <select id="keyMode">
+          <option value="random" selected>랜덤 12키</option>
+          <option value="fixed">직접 선택</option>
+        </select>
+        <select id="fixedKey" style="display:none;margin-top:6px">
+          <option>Bb</option><option>C</option><option>Db</option><option>D</option>
+          <option>Eb</option><option>E</option><option>F</option><option>Gb</option>
+          <option>G</option><option>Ab</option><option>A</option><option>B</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="keyline">KEY <span class="key" id="key">Bb</span></div>
+    <div class="status" id="status">새로운 진행을 생성하세요.</div>
+    <div class="count" id="count"></div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="actions">
+      <button class="primary big" id="start">새 문제 + 10초 카운트</button>
+      <button class="secondary big" id="show">도수 다시 보기</button>
+      <button class="secondary" id="tempoMinus">BPM −5</button>
+      <button class="secondary" id="tempoPlus">BPM +5</button>
+    </div>
+
+    <div class="metronome">
+      <div style="font-weight:700">METRONOME</div>
+      <div class="beat" id="beats"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+      <button class="primary" id="metro">메트로놈 시작</button>
+    </div>
+
+    <div class="note">
+      • 문제를 생성하면 먼저 4마디 도수를 10초 동안 확인합니다.<br>
+      • 10초 후 도수가 자동으로 사라지고 메트로놈에 맞춰 연주합니다.<br>
+      • 모바일에서도 사용할 수 있도록 반응형으로 제작했습니다.
+    </div>
+  </div>
+</div>
+
+<script>
+const keys=["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"];
+const pools={
+ basic:["I","IIM7","IIm7","III7","IIIm7","IVM7","V7","VIm7","VIIø7","bVIIM7"],
+ advanced:["I","IM7","IIm7","II7","IIIM7","III7","IVM7","IVm7","V7","VIm7","VI7","VIIø7","bII7","bVIIM7","bVI7","bVII7","bIII7"],
+ hard:["I","IM7","IIm7","II7","IIø7","IIIM7","III7","IVM7","IVm7","IV7","V7","V7(b9)","V7(#9)","VIm7","VI7","VIIø7","bII7","bIIIM7","bVI7","bVIIM7","bVII7","bVIIIM7"]
+};
+let current=[], timer=null, audioCtx=null, metroTimer=null, metroRunning=false, beat=0;
+
+const $=id=>document.getElementById(id);
+function rand(a){return a[Math.floor(Math.random()*a.length)]}
+function generate(){
+ const mode=$("keyMode").value;
+ const key=mode==="random"?rand(keys):$("fixedKey").value;
+ $("key").textContent=key;
+ const pool=pools[$("level").value];
+ current=Array.from({length:4},()=>rand(pool));
+ render();
+ $("status").textContent="새로운 문제가 생성되었습니다. 10초 동안 진행을 기억하세요.";
+}
+function render(){
+ $("grid").innerHTML="";
+ current.forEach((x,i)=>{
+   const d=document.createElement("div");
+   d.className="bar";
+   d.innerHTML='<div class="num">'+(i+1)+'마디</div><div class="chord">'+x+'</div>';
+   $("grid").appendChild(d);
+ });
+ $("grid").classList.remove("hidden");
+ $("count").textContent="";
+}
+function hide(){ $("grid").classList.add("hidden"); }
+function start(){
+ clearInterval(timer);
+ generate();
+ let n=parseInt($("seconds").value,10);
+ $("count").textContent=n;
+ $("status").textContent="진행을 암기하세요.";
+ timer=setInterval(()=>{
+   n--;
+   if(n>0) $("count").textContent=n;
+   else{
+     clearInterval(timer);
+     $("count").textContent="";
+     hide();
+     // 10초가 끝나는 순간 메트로놈 자동 시작
+     if(metroRunning) stopMetro();
+     startMetro();
+     $("status").textContent="도수가 숨겨졌습니다. 메트로놈이 자동으로 시작됩니다.";
+   }
+ },1000);
+}
+function show(){clearInterval(timer);$("count").textContent="";render();$("status").textContent="도수를 다시 확인할 수 있습니다."}
+
+$("keyMode").onchange=()=>{$("fixedKey").style.display=$("keyMode").value==="fixed"?"block":"none"};
+$("start").onclick=async()=>{try{await ensureAudio()}catch(e){} start();};
+$("show").onclick=show;
+$("tempoMinus").onclick=()=>{$("tempo").value=Math.max(40,parseInt($("tempo").value||100)-5); if(metroRunning){stopMetro();startMetro();}};
+$("tempoPlus").onclick=()=>{$("tempo").value=Math.min(220,parseInt($("tempo").value||100)+5); if(metroRunning){stopMetro();startMetro();}};
+
+async function ensureAudio(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC) throw new Error("Web Audio API를 지원하지 않습니다.");
+  if(!audioCtx) audioCtx=new AC();
+  if(audioCtx.state==="suspended") await audioCtx.resume();
+}
+function clickSound(accent=false){
+  if(!audioCtx || audioCtx.state!=="running") return;
+  const now=audioCtx.currentTime;
+  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+  o.type="sine";
+  o.frequency.setValueAtTime(accent?1100:800,now);
+  g.gain.setValueAtTime(0.0001,now);
+  g.gain.exponentialRampToValueAtTime(0.16,now+0.004);
+  g.gain.exponentialRampToValueAtTime(0.0001,now+0.07);
+  o.connect(g);g.connect(audioCtx.destination);
+  o.start(now);o.stop(now+0.075);
+}
+function visualBeat(){
+ const spans=$("beats").querySelectorAll("span");
+ spans.forEach((s,i)=>s.classList.toggle("active",i===beat));
+ beat=(beat+1)%4;
+}
+async function startMetro(){
+  try{ await ensureAudio(); }catch(e){
+    $("status").textContent="이 브라우저에서는 메트로놈 소리를 사용할 수 없습니다.";
+    return;
+  }
+  if(metroTimer) clearInterval(metroTimer);
+  const bpm=Math.max(40,Math.min(220,parseInt($("tempo").value)||100));
+  const interval=60000/bpm;
+  metroRunning=true;beat=0;
+  $("metro").textContent="메트로놈 정지";
+  clickSound(true);visualBeat();
+  metroTimer=setInterval(()=>{clickSound(beat===0);visualBeat()},interval);
+}
+function stopMetro(){
+ clearInterval(metroTimer);metroTimer=null;metroRunning=false;
+ $("metro").textContent="메트로놈 시작";
+ $("beats").querySelectorAll("span").forEach(s=>s.classList.remove("active"));
+}
+$("metro").onclick=async()=>{if(metroRunning) stopMetro(); else await startMetro();};
+
+generate();
+</script>
+</body>
+</html>
