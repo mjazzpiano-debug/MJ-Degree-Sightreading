@@ -115,8 +115,6 @@ button{
   color:#111;
 }
 
-/* 소리 안내문 */
-
 .sound-notice{
   background:#f1f1f1;
   border-radius:12px;
@@ -317,8 +315,6 @@ button{
 <div class="panel">
 
 
-<!-- 소리 안내 -->
-
 <div class="sound-notice">
 
 ① 아이폰에서 소리가 나지 않을 경우
@@ -340,7 +336,6 @@ button{
 
 
 <div class="controls">
-
 
 <div>
 
@@ -987,8 +982,10 @@ function playClickAt(
   );
 
 
+  /* 메트로놈 볼륨 증가 */
+
   gain.gain.linearRampToValueAtTime(
-    accent ? 0.32 : 0.23,
+    accent ? 0.48 : 0.35,
     time + 0.002
   );
 
