@@ -17,29 +17,88 @@ h1{font-size:28px;margin:0 0 6px;font-weight:800}
 label{font-size:13px;color:#666;display:block;margin-bottom:6px}
 select,input,button{font:inherit}
 select,input[type=number]{width:100%;height:44px;border:1px solid #ccc;border-radius:10px;padding:0 12px;background:#fff}
-button{border:0;border-radius:11px;height:46px;padding:0 18px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button{
+  border:0;
+  border-radius:11px;
+  height:46px;
+  padding:0 18px;
+  font-weight:700;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation
+}
 .primary{background:#111;color:#fff}
 .secondary{background:#eee;color:#111}
 .keyline{text-align:center;margin:10px 0 16px}
 .key{font-size:22px;font-weight:800}
 .status{text-align:center;color:#666;min-height:24px;font-size:14px}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
-.bar{height:150px;background:#fafafa;border:1px solid #d8d8d8;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.bar:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#111}
-.num{position:absolute;top:10px;left:14px;font-size:12px;color:#999}
-.chord{font-size:27px;font-weight:800;letter-spacing:-.5px}
+.bar{
+  height:150px;
+  background:#fafafa;
+  border:1px solid #d8d8d8;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden
+}
+.bar:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:#111
+}
+.num{
+  position:absolute;
+  top:10px;
+  left:14px;
+  font-size:12px;
+  color:#999
+}
+.chord{
+  font-size:27px;
+  font-weight:800;
+  letter-spacing:-.5px
+}
 .hidden .chord{visibility:hidden}
 .hidden .bar{background:#eee}
 .hidden .bar:before{background:#bbb}
 .hidden .num{visibility:hidden}
 .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .big{min-width:180px}
-.metronome{margin-top:18px;padding-top:18px;border-top:1px solid #eee;text-align:center}
-.beat{font-size:30px;font-weight:800;letter-spacing:8px;margin:8px 0 12px;min-height:38px}
+.metronome{
+  margin-top:18px;
+  padding-top:18px;
+  border-top:1px solid #eee;
+  text-align:center
+}
+.beat{
+  font-size:30px;
+  font-weight:800;
+  letter-spacing:8px;
+  margin:8px 0 12px;
+  min-height:38px
+}
 .beat span.active{opacity:1}
 .beat span{opacity:.18}
-.note{font-size:13px;color:#777;line-height:1.6;margin-top:14px}
-.count{font-size:48px;font-weight:900;text-align:center;height:58px}
+.note{
+  font-size:13px;
+  color:#777;
+  line-height:1.6;
+  margin-top:14px
+}
+.count{
+  font-size:48px;
+  font-weight:900;
+  text-align:center;
+  height:58px
+}
 
 @media(max-width:650px){
  .wrap{padding:20px 12px 30px}
@@ -70,7 +129,6 @@ button{border:0;border-radius:11px;height:46px;padding:0 18px;font-weight:700;cu
 
       <div>
         <label>난이도</label>
-
         <select id="level">
           <option value="basic">중급</option>
           <option value="advanced" selected>중상급</option>
@@ -80,19 +138,11 @@ button{border:0;border-radius:11px;height:46px;padding:0 18px;font-weight:700;cu
 
       <div>
         <label>템포 (BPM)</label>
-
-        <input
-          id="tempo"
-          type="number"
-          min="40"
-          max="220"
-          value="100"
-        >
+        <input id="tempo" type="number" min="40" max="220" value="100">
       </div>
 
       <div>
         <label>암기 시간</label>
-
         <select id="seconds">
           <option value="5">5초</option>
           <option value="10" selected>10초</option>
@@ -154,31 +204,19 @@ button{border:0;border-radius:11px;height:46px;padding:0 18px;font-weight:700;cu
 
     <div class="actions">
 
-      <button
-        class="primary big"
-        id="start"
-      >
+      <button class="primary big" id="start">
         새 문제 + 10초 카운트
       </button>
 
-      <button
-        class="secondary big"
-        id="show"
-      >
+      <button class="secondary big" id="show">
         도수 다시 보기
       </button>
 
-      <button
-        class="secondary"
-        id="tempoMinus"
-      >
+      <button class="secondary" id="tempoMinus">
         BPM −5
       </button>
 
-      <button
-        class="secondary"
-        id="tempoPlus"
-      >
+      <button class="secondary" id="tempoPlus">
         BPM +5
       </button>
 
@@ -197,10 +235,7 @@ button{border:0;border-radius:11px;height:46px;padding:0 18px;font-weight:700;cu
         <span>4</span>
       </div>
 
-      <button
-        class="primary"
-        id="metro"
-      >
+      <button class="primary" id="metro">
         메트로놈 시작
       </button>
 
@@ -255,41 +290,40 @@ let metroTimer=null;
 let metroRunning=false;
 let beat=0;
 
+/* 정확한 메트로놈 스케줄링용 */
+let nextBeatTime=0;
+let schedulerTimer=null;
+
 
 /* ==========================================
-   GitHub에 올릴 메트로놈 음원
-   파일명은 반드시 아래와 같아야 합니다.
+   메트로놈 음원
    ========================================== */
 
-const METRO_FILE =
+const METRO_FILE=
   "75%20BPM%20-%20Metronome.mp3";
 
-
-/*
-   원본 음원이 75 BPM이므로
-   현재 BPM / 75 로 재생속도를 계산합니다.
-*/
-
 const BASE_BPM=75;
-
-
-/*
-   HTML5 Audio
-
-   iPhone에서는 사용자가 버튼을 누른 순간
-   audio.play()가 호출되어야 안정적으로 재생됩니다.
-*/
 
 const metroAudio=new Audio(METRO_FILE);
 
 metroAudio.preload="auto";
-
 metroAudio.playsInline=true;
 
 
-/* ------------------------------------------
-   현재 BPM에 맞게 음원 속도 설정
------------------------------------------- */
+/* ==========================================
+   기본 함수
+   ========================================== */
+
+const $=id=>document.getElementById(id);
+
+function rand(a){
+  return a[Math.floor(Math.random()*a.length)];
+}
+
+
+/* ==========================================
+   음원 속도
+   ========================================== */
 
 function setMetroSpeed(){
 
@@ -306,27 +340,22 @@ function setMetroSpeed(){
 }
 
 
-/* ------------------------------------------
+/* ==========================================
    iPhone 오디오 활성화
------------------------------------------- */
+   ========================================== */
 
 function unlockAudio(){
 
   setMetroSpeed();
 
-  /*
-    사용자가 직접 버튼을 누른 순간
-    오디오를 한번 재생해서 iPhone Safari가
-    해당 Audio 객체의 재생을 허용하도록 합니다.
-  */
-
   try{
 
+    metroAudio.pause();
     metroAudio.currentTime=0;
 
     const p=metroAudio.play();
 
-    if(p && typeof p.catch==="function"){
+    if(p && typeof p.then==="function"){
 
       p.then(()=>{
 
@@ -342,21 +371,9 @@ function unlockAudio(){
 }
 
 
-/* ------------------------------------------
+/* ==========================================
    문제 생성
------------------------------------------- */
-
-const $=id=>document.getElementById(id);
-
-
-function rand(a){
-
-  return a[
-    Math.floor(Math.random()*a.length)
-  ];
-
-}
-
+   ========================================== */
 
 function generate(){
 
@@ -420,16 +437,11 @@ function hide(){
 }
 
 
-/* ------------------------------------------
+/* ==========================================
    문제 시작
------------------------------------------- */
+   ========================================== */
 
 function start(){
-
-  /*
-    ★ 사용자가 버튼을 누른 순간 오디오 활성화
-    iPhone에서 중요합니다.
-  */
 
   unlockAudio();
 
@@ -463,15 +475,8 @@ function start(){
 
       hide();
 
-      /*
-        암기 시간이 끝나면
-        메트로놈 자동 시작
-      */
-
       if(metroRunning){
-
         stopMetro();
-
       }
 
       startMetro();
@@ -486,9 +491,9 @@ function start(){
 }
 
 
-/* ------------------------------------------
-   도수 다시 보기
------------------------------------------- */
+/* ==========================================
+   다시 보기
+   ========================================== */
 
 function show(){
 
@@ -504,9 +509,9 @@ function show(){
 }
 
 
-/* ------------------------------------------
+/* ==========================================
    설정
------------------------------------------- */
+   ========================================== */
 
 $("keyMode").onchange=()=>{
 
@@ -520,13 +525,12 @@ $("keyMode").onchange=()=>{
 
 $("start").onclick=start;
 
-
 $("show").onclick=show;
 
 
-/* ------------------------------------------
+/* ==========================================
    BPM -
------------------------------------------- */
+   ========================================== */
 
 $("tempoMinus").onclick=()=>{
 
@@ -540,17 +544,16 @@ $("tempoMinus").onclick=()=>{
 
   if(metroRunning){
 
-    stopMetro();
-    startMetro();
+    restartMetro();
 
   }
 
 };
 
 
-/* ------------------------------------------
+/* ==========================================
    BPM +
------------------------------------------- */
+   ========================================== */
 
 $("tempoPlus").onclick=()=>{
 
@@ -564,17 +567,16 @@ $("tempoPlus").onclick=()=>{
 
   if(metroRunning){
 
-    stopMetro();
-    startMetro();
+    restartMetro();
 
   }
 
 };
 
 
-/* ------------------------------------------
-   비트 표시
------------------------------------------- */
+/* ==========================================
+   화면 숫자
+   ========================================== */
 
 function visualBeat(){
 
@@ -590,22 +592,41 @@ function visualBeat(){
 
   });
 
-  beat=(beat+1)%4;
+}
+
+
+/* ==========================================
+   실제 클릭음 재생
+   ========================================== */
+
+function clickSound(){
+
+  try{
+
+    metroAudio.pause();
+
+    metroAudio.currentTime=0;
+
+    const p=metroAudio.play();
+
+    if(p && typeof p.catch==="function"){
+      p.catch(()=>{});
+    }
+
+  }catch(e){}
 
 }
 
 
-/* ------------------------------------------
-   메트로놈 시작
------------------------------------------- */
+/* ==========================================
+   정확한 다음 박자 계산
+   ========================================== */
 
-function startMetro(){
+function scheduleNextBeat(){
 
-  /*
-    현재 BPM에 맞게 재생속도 변경
-  */
-
-  setMetroSpeed();
+  if(!metroRunning){
+    return;
+  }
 
   const bpm=Math.max(
     40,
@@ -615,11 +636,65 @@ function startMetro(){
     )
   );
 
+  const interval=60000/bpm;
+
   /*
-    1박 간격
+    현재 시간을 기준으로 다음 박자의
+    예정 시각을 계산합니다.
+
+    setInterval을 단순 반복하지 않기 때문에
+    시간이 지나도 누적 오차가 줄어듭니다.
   */
 
-  const interval=60000/bpm;
+  const now=performance.now();
+
+  if(nextBeatTime<now){
+    nextBeatTime=now;
+  }
+
+  const delay=Math.max(
+    0,
+    nextBeatTime-now
+  );
+
+  metroTimer=setTimeout(()=>{
+
+    if(!metroRunning){
+      return;
+    }
+
+    /*
+      소리와 숫자를 같은 함수 안에서 처리
+    */
+
+    clickSound();
+
+    visualBeat();
+
+    /*
+      다음 박자
+    */
+
+    beat=(beat+1)%4;
+
+    nextBeatTime+=interval;
+
+    scheduleNextBeat();
+
+  },delay);
+
+}
+
+
+/* ==========================================
+   메트로놈 시작
+   ========================================== */
+
+function startMetro(){
+
+  setMetroSpeed();
+
+  clearTimeout(metroTimer);
 
   metroRunning=true;
 
@@ -628,83 +703,57 @@ function startMetro(){
   $("metro").textContent=
     "메트로놈 정지";
 
-
   /*
-    기존 재생을 정리
+    첫 박자를 지금 즉시 실행
   */
 
-  clearInterval(metroTimer);
-
-  metroAudio.pause();
-
-  metroAudio.currentTime=0;
-
-
-  /*
-    첫 박자
-  */
+  nextBeatTime=performance.now();
 
   clickSound();
 
   visualBeat();
 
+  beat=1;
 
   /*
-    이후 BPM에 맞춰 반복
+    두 번째 박자부터 정확한 간격으로 예약
   */
 
-  metroTimer=setInterval(()=>{
+  const bpm=Math.max(
+    40,
+    Math.min(
+      220,
+      parseInt($("tempo").value)||100
+    )
+  );
 
-    clickSound();
+  nextBeatTime+=60000/bpm;
 
-    visualBeat();
-
-  },interval);
-
-}
-
-
-/* ------------------------------------------
-   실제 음원 재생
------------------------------------------- */
-
-function clickSound(){
-
-  setMetroSpeed();
-
-  try{
-
-    /*
-      음원이 끝난 뒤 다시 처음부터 재생
-    */
-
-    metroAudio.currentTime=0;
-
-    const p=metroAudio.play();
-
-    /*
-      iPhone에서 Promise rejection이 발생해도
-      프로그램이 멈추지 않도록 처리
-    */
-
-    if(p && typeof p.catch==="function"){
-
-      p.catch(()=>{});
-
-    }
-
-  }catch(e){}
+  scheduleNextBeat();
 
 }
 
 
-/* ------------------------------------------
+/* ==========================================
+   메트로놈 재시작
+   ========================================== */
+
+function restartMetro(){
+
+  stopMetro();
+
+  startMetro();
+
+}
+
+
+/* ==========================================
    메트로놈 정지
------------------------------------------- */
+   ========================================== */
 
 function stopMetro(){
 
-  clearInterval(metroTimer);
+  clearTimeout(metroTimer);
 
   metroTimer=null;
 
@@ -712,54 +761,52 @@ function stopMetro(){
 
   metroAudio.pause();
 
-  metroAudio.currentTime=0;
+  try{
+    metroAudio.currentTime=0;
+  }catch(e){}
 
   $("metro").textContent=
     "메트로놈 시작";
 
   $("beats")
     .querySelectorAll("span")
-    .forEach(s=>
-      s.classList.remove("active")
-    );
+    .forEach(s=>{
+      s.classList.remove("active");
+    });
+
+  beat=0;
 
 }
 
 
-/* ------------------------------------------
+/* ==========================================
    메트로놈 버튼
------------------------------------------- */
+   ========================================== */
 
 $("metro").onclick=()=>{
 
-  /*
-    직접 버튼을 누른 것이므로
-    먼저 iPhone 오디오 권한을 확보합니다.
-  */
+  if(metroRunning){
 
-  if(!metroRunning){
-
-    unlockAudio();
-
-    /*
-      unlockAudio()에서 잠깐 재생한 뒤
-      실제 메트로놈을 시작합니다.
-    */
-
-    startMetro();
+    stopMetro();
 
   }else{
 
-    stopMetro();
+    /*
+      사용자 터치 안에서 오디오를 활성화
+    */
+
+    unlockAudio();
+
+    startMetro();
 
   }
 
 };
 
 
-/* ------------------------------------------
+/* ==========================================
    초기 화면
------------------------------------------- */
+   ========================================== */
 
 generate();
 
