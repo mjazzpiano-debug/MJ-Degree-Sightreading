@@ -50,10 +50,16 @@
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .sound-guide-button:active {
     transform: scale(0.98);
+  }
+
+  /* 팝업이 닫힌 상태 */
+  .sound-guide-overlay.hidden {
+    display: none !important;
   }
 </style>
 
@@ -76,6 +82,7 @@
       ② 휴대폰 볼륨을 확인해주세요.<br>
 
       ③ 카카오톡에서 실행되지 않는 경우,<br>
+
       <span class="sound-guide-highlight">
         주소를 복사하여 Safari에서 직접 접속해주세요.
       </span><br>
@@ -85,8 +92,9 @@
     </div>
 
     <button
+      type="button"
       class="sound-guide-button"
-      onclick="closeSoundGuide()">
+      id="soundGuideClose">
       확인했습니다
     </button>
 
@@ -94,11 +102,36 @@
 </div>
 
 <script>
+(function () {
+
   function closeSoundGuide() {
+
     const guide = document.getElementById("soundGuide");
 
-    if (guide) {
-      guide.style.display = "none";
-    }
+    if (!guide) return;
+
+    // 팝업을 완전히 제거
+    guide.classList.add("hidden");
+
+    // 혹시 남아 있는 터치 방해도 제거
+    guide.style.pointerEvents = "none";
+
+    // 페이지 스크롤 잠금이 걸려 있다면 해제
+    document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
+
   }
+
+  // 버튼 클릭
+  const closeButton = document.getElementById("soundGuideClose");
+
+  if (closeButton) {
+    closeButton.addEventListener("click", closeSoundGuide);
+    closeButton.addEventListener("touchend", function (e) {
+      e.preventDefault();
+      closeSoundGuide();
+    }, { passive: false });
+  }
+
+})();
 </script>
