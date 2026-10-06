@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -308,10 +307,6 @@ button{
 <div class="panel">
 
 
-<!-- =========================================
-     모바일 오디오 활성화
-========================================= -->
-
 <div
   class="mobile-help"
   id="mobileHelp"
@@ -328,10 +323,6 @@ button{
   🔊 소리 활성화
 </button>
 
-
-<!-- =========================================
-     설정
-========================================= -->
 
 <div class="controls">
 
@@ -382,56 +373,18 @@ button{
 
 <select id="seconds">
 
-<option value="5">
-5초
-</option>
-
-<option
-  value="10"
-  selected
->
-10초
-</option>
-
-<option value="15">
-15초
-</option>
-
-<option value="20">
-20초
-</option>
-
-<option value="25">
-25초
-</option>
-
-<option value="30">
-30초
-</option>
-
-<option value="35">
-35초
-</option>
-
-<option value="40">
-40초
-</option>
-
-<option value="45">
-45초
-</option>
-
-<option value="50">
-50초
-</option>
-
-<option value="55">
-55초
-</option>
-
-<option value="60">
-60초
-</option>
+<option value="5">5초</option>
+<option value="10" selected>10초</option>
+<option value="15">15초</option>
+<option value="20">20초</option>
+<option value="25">25초</option>
+<option value="30">30초</option>
+<option value="35">35초</option>
+<option value="40">40초</option>
+<option value="45">45초</option>
+<option value="50">50초</option>
+<option value="55">55초</option>
+<option value="60">60초</option>
 
 </select>
 
@@ -444,10 +397,7 @@ button{
 
 <select id="keyMode">
 
-<option
-  value="random"
-  selected
->
+<option value="random" selected>
 랜덤 12키
 </option>
 
@@ -483,13 +433,10 @@ button{
 </div>
 
 
-<!-- =========================================
-     KEY
-========================================= -->
-
 <div class="keyline">
 
 KEY
+
 <span
   class="key"
   id="key"
@@ -514,19 +461,11 @@ Bb
 ></div>
 
 
-<!-- =========================================
-     문제
-========================================= -->
-
 <div
   class="grid"
   id="grid"
 ></div>
 
-
-<!-- =========================================
-     버튼
-========================================= -->
 
 <div class="actions">
 
@@ -563,10 +502,6 @@ BPM +5
 
 </div>
 
-
-<!-- =========================================
-     메트로놈
-========================================= -->
 
 <div class="metronome">
 
@@ -618,93 +553,74 @@ METRONOME
 
 <script>
 
-
 /* =========================================================
    데이터
 ========================================================= */
 
 const keys = [
-
-"C",
-"Db",
-"D",
-"Eb",
-"E",
-"F",
-"Gb",
-"G",
-"Ab",
-"A",
-"Bb",
-"B"
-
+  "C","Db","D","Eb","E","F",
+  "Gb","G","Ab","A","Bb","B"
 ];
 
 
 const pools = {
 
 basic:[
-
-"I",
-"IIM7",
-"IIm7",
-"III7",
-"IIIm7",
-"IVM7",
-"V7",
-"VIm7",
-"VIIø7",
-"bVIIM7"
-
+  "I",
+  "IIM7",
+  "IIm7",
+  "III7",
+  "IIIm7",
+  "IVM7",
+  "V7",
+  "VIm7",
+  "VIIø7",
+  "bVIIM7"
 ],
 
 advanced:[
-
-"I",
-"IM7",
-"IIm7",
-"II7",
-"IIIM7",
-"III7",
-"IVM7",
-"IVm7",
-"V7",
-"VIm7",
-"VI7",
-"VIIø7",
-"bII7",
-"bVIIM7",
-"bVI7",
-"bVII7",
-"bIII7"
-
+  "I",
+  "IM7",
+  "IIm7",
+  "II7",
+  "IIIM7",
+  "III7",
+  "IVM7",
+  "IVm7",
+  "V7",
+  "VIm7",
+  "VI7",
+  "VIIø7",
+  "bII7",
+  "bVIIM7",
+  "bVI7",
+  "bVII7",
+  "bIII7"
 ],
 
 hard:[
-
-"I",
-"IM7",
-"IIm7",
-"II7",
-"IIø7",
-"IIIM7",
-"III7",
-"IVM7",
-"IVm7",
-"IV7",
-"V7",
-"V7(b9)",
-"V7(#9)",
-"VIm7",
-"VI7",
-"VIIø7",
-"bII7",
-"bIIIM7",
-"bVI7",
-"bVIIM7",
-"bVII7",
-"bVIIIM7"
-
+  "I",
+  "IM7",
+  "IIm7",
+  "II7",
+  "IIø7",
+  "IIIM7",
+  "III7",
+  "IVM7",
+  "IVm7",
+  "IV7",
+  "V7",
+  "V7(b9)",
+  "V7(#9)",
+  "VIm7",
+  "VI7",
+  "VIIø7",
+  "bII7",
+  "bIIIM7",
+  "bVI7",
+  "bVIIM7",
+  "bVII7",
+  "bVIIIM7"
 ]
 
 };
@@ -724,19 +640,30 @@ let metroRunning = false;
 
 let beat = 0;
 
-let nextBeatTime = 0;
+
+/*
+   Web Audio 전용 시간
+*/
+let nextNoteTime = 0;
 
 let audioContext = null;
 
 let audioReady = false;
 
 
+/*
+   메트로놈 예약 범위
+*/
+const LOOK_AHEAD = 25;
+
+const SCHEDULE_AHEAD_TIME = 0.10;
+
+
 /* =========================================================
    DOM
 ========================================================= */
 
-const $ = id =>
-document.getElementById(id);
+const $ = id => document.getElementById(id);
 
 
 /* =========================================================
@@ -745,11 +672,11 @@ document.getElementById(id);
 
 function rand(arr){
 
-return arr[
-Math.floor(
-Math.random() * arr.length
-)
-];
+  return arr[
+    Math.floor(
+      Math.random() * arr.length
+    )
+  ];
 
 }
 
@@ -760,158 +687,194 @@ Math.random() * arr.length
 
 function getBPM(){
 
-let bpm =
-parseInt(
-$("tempo").value,
-10
-);
+  let bpm =
+    parseInt(
+      $("tempo").value,
+      10
+    );
 
-if(isNaN(bpm)){
-bpm = 100;
-}
+  if(isNaN(bpm)){
+    bpm = 100;
+  }
 
-bpm =
-Math.max(
-40,
-Math.min(
-220,
-bpm
-)
-);
+  bpm =
+    Math.max(
+      40,
+      Math.min(
+        220,
+        bpm
+      )
+    );
 
-$("tempo").value = bpm;
+  $("tempo").value = bpm;
 
-return bpm;
+  return bpm;
 
 }
 
 
 /* =========================================================
-   오디오 시스템 생성
+   AudioContext 생성
 ========================================================= */
 
 function createAudio(){
 
-if(audioContext){
-return audioContext;
-}
+  if(audioContext){
 
-const AudioCtx =
-window.AudioContext ||
-window.webkitAudioContext;
+    return audioContext;
 
-if(!AudioCtx){
+  }
 
-alert(
-"이 브라우저에서는 오디오 기능을 사용할 수 없습니다."
-);
 
-return null;
+  const AudioCtx =
+    window.AudioContext ||
+    window.webkitAudioContext;
 
-}
 
-try{
+  if(!AudioCtx){
 
-audioContext =
-new AudioCtx();
+    alert(
+      "이 브라우저에서는 오디오 기능을 사용할 수 없습니다."
+    );
 
-}catch(e){
+    return null;
 
-console.error(e);
+  }
 
-return null;
 
-}
+  try{
 
-return audioContext;
+    /*
+      iPhone Safari에서는
+      latencyHint를 너무 공격적으로 주지 않음
+    */
+
+    audioContext =
+      new AudioCtx({
+        latencyHint:"interactive"
+      });
+
+
+    /*
+      iOS에서 destination 연결을
+      명확하게 유지
+    */
+
+    const silentGain =
+      audioContext.createGain();
+
+    silentGain.gain.value = 1;
+
+    silentGain.connect(
+      audioContext.destination
+    );
+
+
+  }catch(e){
+
+    console.error(e);
+
+    audioContext = null;
+
+    return null;
+
+  }
+
+
+  return audioContext;
 
 }
 
 
 /* =========================================================
-   실제 테스트 음
+   테스트음
 ========================================================= */
 
-function testSound(){
+function playTestSound(){
 
-const ctx =
-createAudio();
+  const ctx =
+    createAudio();
 
-if(!ctx){
-return false;
-}
-
-
-/*
-   중요:
-   iPhone Safari에서는
-   resume()이 사용자 터치 이벤트 안에서
-   실행되어야 함
-*/
-
-if(
-ctx.state === "suspended" ||
-ctx.state === "interrupted"
-){
-
-ctx.resume();
-
-}
+  if(!ctx){
+    return false;
+  }
 
 
-/*
-   아주 단순한 beep 생성
-*/
+  try{
 
-const oscillator =
-ctx.createOscillator();
+    /*
+      사용자 터치 직후 호출되는 함수이므로
+      여기서 resume
+    */
 
-const gain =
-ctx.createGain();
+    if(
+      ctx.state !== "running"
+    ){
 
+      ctx.resume();
 
-oscillator.type =
-"sine";
-
-oscillator.frequency.value =
-880;
+    }
 
 
-const now =
-ctx.currentTime;
+    const oscillator =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
 
 
-gain.gain.setValueAtTime(
-0.0001,
-now
-);
+    oscillator.type =
+      "sine";
 
-gain.gain.linearRampToValueAtTime(
-0.35,
-now + 0.01
-);
-
-gain.gain.exponentialRampToValueAtTime(
-0.0001,
-now + 0.18
-);
+    oscillator.frequency.setValueAtTime(
+      880,
+      ctx.currentTime
+    );
 
 
-oscillator.connect(gain);
-
-gain.connect(
-ctx.destination
-);
+    const now =
+      ctx.currentTime;
 
 
-oscillator.start(now);
+    gain.gain.setValueAtTime(
+      0.0001,
+      now
+    );
 
-oscillator.stop(
-now + 0.2
-);
+    gain.gain.linearRampToValueAtTime(
+      0.30,
+      now + 0.01
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      now + 0.18
+    );
 
 
-return true;
+    oscillator.connect(gain);
+
+    gain.connect(
+      ctx.destination
+    );
+
+
+    oscillator.start(now);
+
+    oscillator.stop(
+      now + 0.20
+    );
+
+
+    return true;
+
+  }catch(e){
+
+    console.error(e);
+
+    return false;
+
+  }
 
 }
 
@@ -922,72 +885,85 @@ return true;
 
 function activateSound(){
 
-const ctx =
-createAudio();
-
-if(!ctx){
-
-$("status").textContent =
-"이 브라우저에서는 오디오를 사용할 수 없습니다.";
-
-return;
-
-}
+  const ctx =
+    createAudio();
 
 
-/*
-   반드시 버튼 클릭 안에서 resume
-*/
+  if(!ctx){
 
-try{
+    $("status").textContent =
+      "오디오 기능을 사용할 수 없습니다.";
 
-const result =
-ctx.resume();
+    return;
 
-if(result){
-result.catch(()=>{});
-}
-
-}catch(e){
-
-console.error(e);
-
-}
+  }
 
 
-/*
-   즉시 테스트음
-*/
+  /*
+    중요:
+    버튼의 실제 터치 이벤트 안에서
+    AudioContext를 resume
+  */
 
-testSound();
+  try{
 
+    if(
+      ctx.state !== "running"
+    ){
 
-/*
-   상태 변경
-*/
+      ctx.resume();
 
-audioReady = true;
+    }
 
-$("soundButton")
-.classList
-.add("ready");
+  }catch(e){
 
-$("soundButton")
-.textContent =
-"✓ 소리 활성화 완료";
+    console.error(e);
 
-
-$("status").textContent =
-"소리가 활성화되었습니다. 이제 연습을 시작하세요.";
+  }
 
 
-/*
-   모바일 도움말 표시
-*/
+  /*
+    테스트음을 바로 생성
+  */
 
-$("mobileHelp")
-.style.display =
-"block";
+  const success =
+    playTestSound();
+
+
+  if(success){
+
+    audioReady = true;
+
+
+    $("soundButton")
+      .classList
+      .add("ready");
+
+
+    $("soundButton")
+      .textContent =
+      "✓ 소리 활성화 완료";
+
+
+    $("status").textContent =
+      "소리가 활성화되었습니다. 이제 연습을 시작하세요.";
+
+
+    $("mobileHelp")
+      .style
+      .display =
+      "block";
+
+
+  }else{
+
+    audioReady = false;
+
+
+    $("status").textContent =
+      "소리 활성화에 실패했습니다. 버튼을 다시 눌러주세요.";
+
+  }
 
 }
 
@@ -996,80 +972,68 @@ $("mobileHelp")
    메트로놈 클릭음
 ========================================================= */
 
-function playClick(accent){
+function playClickAt(time,accent){
 
-if(!audioContext){
-return;
-}
-
-
-/*
-   혹시 Safari가 다시 suspended 상태가 된 경우
-*/
-
-if(
-audioContext.state === "suspended" ||
-audioContext.state === "interrupted"
-){
-
-audioContext.resume();
-
-}
+  const ctx =
+    audioContext;
 
 
-const now =
-audioContext.currentTime;
+  if(!ctx){
+    return;
+  }
 
 
-const oscillator =
-audioContext.createOscillator();
+  const oscillator =
+    ctx.createOscillator();
 
-const gain =
-audioContext.createGain();
-
-
-oscillator.type =
-"sine";
+  const gain =
+    ctx.createGain();
 
 
-oscillator.frequency.value =
-accent
-? 1500
-: 1000;
+  oscillator.type =
+    "sine";
 
 
-/*
-   짧은 클릭
-*/
-
-gain.gain.setValueAtTime(
-0.0001,
-now
-);
-
-gain.gain.linearRampToValueAtTime(
-accent ? 0.32 : 0.23,
-now + 0.002
-);
-
-gain.gain.exponentialRampToValueAtTime(
-0.0001,
-now + 0.055
-);
+  oscillator.frequency.setValueAtTime(
+    accent ? 1500 : 1000,
+    time
+  );
 
 
-oscillator.connect(gain);
+  /*
+    클릭을 아주 짧게
+  */
 
-gain.connect(
-audioContext.destination
-);
+  gain.gain.setValueAtTime(
+    0.0001,
+    time
+  );
 
 
-oscillator.start(now);
+  gain.gain.linearRampToValueAtTime(
+    accent ? 0.32 : 0.23,
+    time + 0.002
+  );
 
-oscillator.stop(
-now + 0.06
-);
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.0001,
+    time + 0.055
+  );
+
+
+  oscillator.connect(gain);
+
+  gain.connect(
+    ctx.destination
+  );
+
+
+  oscillator.start(time);
+
+  oscillator.stop(
+    time + 0.06
+  );
 
 }
 
@@ -1080,38 +1044,38 @@ now + 0.06
 
 function generate(){
 
-const mode =
-$("keyMode").value;
+  const mode =
+    $("keyMode").value;
 
 
-const selectedKey =
-mode === "random"
-? rand(keys)
-: $("fixedKey").value;
+  const selectedKey =
+    mode === "random"
+      ? rand(keys)
+      : $("fixedKey").value;
 
 
-$("key").textContent =
-selectedKey;
+  $("key").textContent =
+    selectedKey;
 
 
-const pool =
-pools[
-$("level").value
-];
+  const pool =
+    pools[
+      $("level").value
+    ];
 
 
-current =
-Array.from(
-{length:4},
-()=>rand(pool)
-);
+  current =
+    Array.from(
+      {length:4},
+      () => rand(pool)
+    );
 
 
-render();
+  render();
 
 
-$("status").textContent =
-"새로운 문제가 생성되었습니다.";
+  $("status").textContent =
+    "새로운 문제가 생성되었습니다.";
 
 }
 
@@ -1122,43 +1086,44 @@ $("status").textContent =
 
 function render(){
 
-$("grid").innerHTML = "";
+  $("grid").innerHTML = "";
 
 
-current.forEach(
-(chord,index)=>{
+  current.forEach(
+    (chord,index)=>{
 
-const box =
-document.createElement("div");
-
-
-box.className =
-"bar";
+      const box =
+        document.createElement("div");
 
 
-box.innerHTML =
-
-'<div class="num">' +
-(index+1) +
-'마디</div>' +
-
-'<div class="chord">' +
-chord +
-'</div>';
+      box.className =
+        "bar";
 
 
-$("grid")
-.appendChild(box);
+      box.innerHTML =
 
-});
+        '<div class="num">' +
+        (index+1) +
+        '마디</div>' +
+
+        '<div class="chord">' +
+        chord +
+        '</div>';
 
 
-$("grid")
-.classList
-.remove("hidden");
+      $("grid")
+        .appendChild(box);
+
+    }
+  );
 
 
-$("count").textContent = "";
+  $("grid")
+    .classList
+    .remove("hidden");
+
+
+  $("count").textContent = "";
 
 }
 
@@ -1169,9 +1134,9 @@ $("count").textContent = "";
 
 function hide(){
 
-$("grid")
-.classList
-.add("hidden");
+  $("grid")
+    .classList
+    .add("hidden");
 
 }
 
@@ -1182,116 +1147,80 @@ $("grid")
 
 function start(){
 
-/*
-   아직 소리가 활성화되지 않았다면
-   먼저 활성화하도록 안내
-*/
+  if(!audioReady){
 
-if(!audioReady){
+    $("status").textContent =
+      "먼저 위의 「소리 활성화」 버튼을 눌러주세요.";
 
-$("status").textContent =
-"먼저 위의 「소리 활성화」 버튼을 눌러주세요.";
+    return;
 
-return;
-
-}
+  }
 
 
-/*
-   이전 타이머 제거
-*/
-
-clearInterval(timer);
+  clearInterval(timer);
 
 
-/*
-   메트로놈 정지
-*/
+  if(metroRunning){
 
-if(metroRunning){
+    stopMetro();
 
-stopMetro();
-
-}
+  }
 
 
-/*
-   새 문제
-*/
-
-generate();
+  generate();
 
 
-/*
-   사용자가 설정한 시간
-*/
-
-let remaining =
-parseInt(
-$("seconds").value,
-10
-);
+  let remaining =
+    parseInt(
+      $("seconds").value,
+      10
+    );
 
 
-/*
-   즉시 표시
-*/
-
-$("count").textContent =
-remaining;
+  $("count").textContent =
+    remaining;
 
 
-$("status").textContent =
-"진행을 암기하세요.";
+  $("status").textContent =
+    "진행을 암기하세요.";
 
 
-/*
-   카운트
-*/
+  timer =
+    setInterval(()=>{
 
-timer =
-setInterval(()=>{
-
-remaining--;
+      remaining--;
 
 
-if(remaining > 0){
+      if(remaining > 0){
 
-$("count").textContent =
-remaining;
+        $("count").textContent =
+          remaining;
 
-return;
+        return;
 
-}
-
-
-/*
-   종료
-*/
-
-clearInterval(timer);
-
-timer = null;
-
-$("count").textContent =
-"";
+      }
 
 
-hide();
+      clearInterval(timer);
+
+      timer = null;
 
 
-$("status").textContent =
-"도수가 숨겨졌습니다. 메트로놈을 시작합니다.";
+      $("count").textContent =
+        "";
 
 
-/*
-   자동 메트로놈
-*/
-
-startMetro();
+      hide();
 
 
-},1000);
+      $("status").textContent =
+        "도수가 숨겨졌습니다. 메트로놈을 시작합니다.";
+
+
+      startMetro();
+
+
+    },1000);
 
 }
 
@@ -1302,16 +1231,16 @@ startMetro();
 
 function show(){
 
-clearInterval(timer);
+  clearInterval(timer);
 
-timer = null;
+  timer = null;
 
-$("count").textContent = "";
+  $("count").textContent = "";
 
-render();
+  render();
 
-$("status").textContent =
-"도수를 다시 확인할 수 있습니다.";
+  $("status").textContent =
+    "도수를 다시 확인할 수 있습니다.";
 
 }
 
@@ -1320,120 +1249,98 @@ $("status").textContent =
    박자 화면
 ========================================================= */
 
-function visualBeat(){
+function visualBeat(index){
 
-const spans =
-$("beats")
-.querySelectorAll("span");
+  const spans =
+    $("beats")
+      .querySelectorAll("span");
 
 
-spans.forEach(
-(span,index)=>{
+  spans.forEach(
+    (span,i)=>{
 
-span.classList.toggle(
-"active",
-index === beat
-);
+      span.classList.toggle(
+        "active",
+        i === index
+      );
 
-});
+    }
+  );
 
 }
 
 
 /* =========================================================
-   메트로놈 예약
+   Web Audio 스케줄러
 ========================================================= */
 
-function scheduleBeat(){
+function scheduler(){
 
-if(!metroRunning){
-return;
-}
-
-
-const bpm =
-getBPM();
+  if(!metroRunning){
+    return;
+  }
 
 
-const interval =
-60000 / bpm;
+  const ctx =
+    audioContext;
 
 
-const now =
-performance.now();
+  if(!ctx){
+    return;
+  }
 
 
-/*
-   브라우저가 많이 지연되었으면
-   기준점을 다시 잡음
-*/
+  /*
+    AudioContext 시간으로
+    미리 다음 박자를 예약
+  */
 
-if(
-nextBeatTime <
-now - interval
-){
+  while(
+    nextNoteTime <
+    ctx.currentTime +
+    SCHEDULE_AHEAD_TIME
+  ){
 
-nextBeatTime =
-now;
-
-}
-
-
-const delay =
-Math.max(
-0,
-nextBeatTime - now
-);
+    const currentBeat =
+      beat;
 
 
-metroTimer =
-setTimeout(()=>{
+    /*
+      실제 소리 예약
+    */
 
-if(!metroRunning){
-return;
-}
-
-
-/*
-   현재 박자
-*/
-
-const currentBeat =
-beat;
+    playClickAt(
+      nextNoteTime,
+      currentBeat === 0
+    );
 
 
-/*
-   소리
-*/
+    /*
+      화면 표시를 위해
+      예약된 박자도 함께 처리
+    */
 
-playClick(
-currentBeat === 0
-);
-
-
-/*
-   화면
-*/
-
-visualBeat();
-
-
-/*
-   다음 박자
-*/
-
-beat =
-(beat + 1) % 4;
+    setTimeout(
+      ()=>{
+        if(metroRunning){
+          visualBeat(currentBeat);
+        }
+      },
+      Math.max(
+        0,
+        (nextNoteTime - ctx.currentTime) * 1000
+      )
+    );
 
 
-nextBeatTime +=
-interval;
+    beat =
+      (beat + 1) % 4;
 
 
-scheduleBeat();
+    nextNoteTime +=
+      60 / getBPM();
 
-
-},delay);
+  }
 
 }
 
@@ -1444,75 +1351,101 @@ scheduleBeat();
 
 function startMetro(){
 
-if(!audioReady){
+  if(!audioReady){
 
-return;
+    return;
 
-}
-
-
-if(!audioContext){
-
-return;
-
-}
+  }
 
 
-/*
-   Safari 상태 확인
-*/
-
-if(
-audioContext.state === "suspended" ||
-audioContext.state === "interrupted"
-){
-
-audioContext.resume();
-
-}
+  const ctx =
+    createAudio();
 
 
-clearTimeout(metroTimer);
+  if(!ctx){
+
+    return;
+
+  }
 
 
-metroRunning = true;
+  /*
+    사용자 터치에서 직접 시작할 경우
+    Safari 오디오 상태를 다시 확인
+  */
 
-beat = 0;
+  try{
 
+    if(
+      ctx.state !== "running"
+    ){
 
-$("metro").textContent =
-"메트로놈 정지";
+      ctx.resume();
 
+    }
 
-/*
-   첫 박자 즉시
-*/
+  }catch(e){
 
-nextBeatTime =
-performance.now();
+    console.error(e);
 
-
-playClick(true);
-
-visualBeat();
-
-
-beat = 1;
+  }
 
 
-/*
-   다음 박자
-*/
+  /*
+    현재 AudioContext 시간이
+    정상적으로 흐르고 있는 경우에만 시작
+  */
 
-const bpm =
-getBPM();
+  if(
+    ctx.state !== "running"
+  ){
+
+    $("status").textContent =
+      "소리가 아직 활성화되지 않았습니다. 「소리 활성화」를 다시 눌러주세요.";
+
+    return;
+
+  }
 
 
-nextBeatTime +=
-60000 / bpm;
+  clearTimeout(metroTimer);
 
 
-scheduleBeat();
+  metroRunning = true;
+
+  beat = 0;
+
+
+  $("metro").textContent =
+    "메트로놈 정지";
+
+
+  /*
+    첫 박자를 AudioContext 기준으로
+    아주 조금 뒤에 예약
+  */
+
+  nextNoteTime =
+    ctx.currentTime + 0.03;
+
+
+  /*
+    즉시 스케줄러 실행
+  */
+
+  scheduler();
+
+
+  /*
+    이후 25ms마다
+    다음 음을 미리 예약
+  */
+
+  metroTimer =
+    setInterval(
+      scheduler,
+      LOOK_AHEAD
+    );
 
 }
 
@@ -1523,26 +1456,26 @@ scheduleBeat();
 
 function stopMetro(){
 
-clearTimeout(metroTimer);
+  clearInterval(metroTimer);
 
-metroTimer = null;
+  metroTimer = null;
 
-metroRunning = false;
+  metroRunning = false;
 
-beat = 0;
-
-
-$("metro").textContent =
-"메트로놈 시작";
+  beat = 0;
 
 
-$("beats")
-.querySelectorAll("span")
-.forEach(
-span=>{
-span.classList.remove("active");
-}
-);
+  $("metro").textContent =
+    "메트로놈 시작";
+
+
+  $("beats")
+    .querySelectorAll("span")
+    .forEach(
+      span=>{
+        span.classList.remove("active");
+      }
+    );
 
 }
 
@@ -1553,169 +1486,197 @@ span.classList.remove("active");
 
 function restartMetro(){
 
-stopMetro();
+  stopMetro();
 
-startMetro();
+  startMetro();
 
 }
 
 
 /* =========================================================
-   오디오 활성화 버튼
+   소리 활성화
 ========================================================= */
 
-$("soundButton").onclick =
-function(){
+$("soundButton").addEventListener(
+  "click",
+  function(){
 
-activateSound();
+    activateSound();
 
-};
+  },
+  {passive:true}
+);
 
 
 /* =========================================================
    새 문제
 ========================================================= */
 
-$("start").onclick =
-function(){
+$("start").addEventListener(
+  "click",
+  function(){
 
-start();
+    start();
 
-};
+  },
+  {passive:true}
+);
 
 
 /* =========================================================
    다시 보기
 ========================================================= */
 
-$("show").onclick =
-function(){
+$("show").addEventListener(
+  "click",
+  function(){
 
-show();
+    show();
 
-};
+  },
+  {passive:true}
+);
 
 
 /* =========================================================
    메트로놈 버튼
 ========================================================= */
 
-$("metro").onclick =
-function(){
+$("metro").addEventListener(
+  "click",
+  function(){
 
-/*
-   이 버튼도 직접 터치한 경우
-   AudioContext resume 가능
-*/
+    /*
+      이 버튼 자체도
+      iPhone의 사용자 터치 이벤트
+    */
 
-if(!audioReady){
+    if(!audioReady){
 
-activateSound();
+      activateSound();
 
-return;
+      return;
 
-}
+    }
 
 
-if(metroRunning){
+    if(metroRunning){
 
-stopMetro();
+      stopMetro();
 
-}else{
+      return;
 
-/*
-   사용자 터치 안에서 resume
-*/
+    }
 
-if(audioContext){
 
-try{
+    /*
+      터치 이벤트 안에서
+      AudioContext resume
+    */
 
-const result =
-audioContext.resume();
+    if(audioContext){
 
-if(result){
-result.catch(()=>{});
-}
+      try{
 
-}catch(e){}
+        if(
+          audioContext.state !== "running"
+        ){
 
-}
+          audioContext.resume();
 
-startMetro();
+        }
 
-}
+      }catch(e){
 
-};
+        console.error(e);
+
+      }
+
+    }
+
+
+    startMetro();
+
+  },
+  {passive:true}
+);
 
 
 /* =========================================================
    BPM -
 ========================================================= */
 
-$("tempoMinus").onclick =
-function(){
+$("tempoMinus").addEventListener(
+  "click",
+  function(){
 
-const bpm =
-getBPM();
+    const bpm =
+      getBPM();
 
 
-$("tempo").value =
-Math.max(
-40,
-bpm - 5
+    $("tempo").value =
+      Math.max(
+        40,
+        bpm - 5
+      );
+
+
+    if(metroRunning){
+
+      restartMetro();
+
+    }
+
+  },
+  {passive:true}
 );
-
-
-if(metroRunning){
-
-restartMetro();
-
-}
-
-};
 
 
 /* =========================================================
    BPM +
 ========================================================= */
 
-$("tempoPlus").onclick =
-function(){
+$("tempoPlus").addEventListener(
+  "click",
+  function(){
 
-const bpm =
-getBPM();
+    const bpm =
+      getBPM();
 
 
-$("tempo").value =
-Math.min(
-220,
-bpm + 5
+    $("tempo").value =
+      Math.min(
+        220,
+        bpm + 5
+      );
+
+
+    if(metroRunning){
+
+      restartMetro();
+
+    }
+
+  },
+  {passive:true}
 );
-
-
-if(metroRunning){
-
-restartMetro();
-
-}
-
-};
 
 
 /* =========================================================
    키 선택
 ========================================================= */
 
-$("keyMode").onchange =
-function(){
+$("keyMode").addEventListener(
+  "change",
+  function(){
 
-$("fixedKey").style.display =
-$("keyMode").value === "fixed"
-? "block"
-: "none";
+    $("fixedKey").style.display =
+      $("keyMode").value === "fixed"
+        ? "block"
+        : "none";
 
-};
+  }
+);
 
 
 /* =========================================================
@@ -1724,9 +1685,7 @@ $("keyMode").value === "fixed"
 
 generate();
 
-
 </script>
 
 </body>
 </html>
-```
